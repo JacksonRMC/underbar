@@ -193,13 +193,35 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+    var result = true;
+    _.each(collection, function(x){
+      if(typeof iterator === 'function'){
+        if(!iterator(x)){
+          result = false;
+        } 
+      } else if(!x){
+        result = false;
+      }
+    });
+    return result;
     // TIP: Try re-using reduce() here.
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
-    // TIP: There's a very clever way to re-use every() here.
+      var result = false;
+    _.each(collection, function(x){
+      if(typeof iterator === 'function'){
+        if(iterator(x)){
+          result = true;
+        } 
+      } else if(x){
+        result = true;
+      }
+    });
+    return result;
+
   };
 
 
@@ -222,11 +244,25 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    for(var el in arguments){
+      for(var y in arguments[el]){
+        obj[y] = arguments[el][y]
+      }        
+    }
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    for(var el in arguments){
+      for(var y in arguments[el]){
+        if(obj[y] === undefined){
+          obj[y] = arguments[el][y];
+        }
+      }        
+    }
+    return obj;
   };
 
 
@@ -270,6 +306,10 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    
+
+
+
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -279,6 +319,12 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var arg1 = arguments[3];
+    var arg2 = arguments[2];
+    setTimeout(function() {
+      return func(arg2, arg1);
+    }, wait);
+
   };
 
 
@@ -293,6 +339,16 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var result = [];
+    for(var i = 0; i < array.length; i++){
+      var shuffled = Math.floor(Math.random()) * (array.length - 1);
+      if(result[shuffled] !== array[i]){
+        result[shuffled] = array[i];
+      } else {
+        i -= 1;
+      }
+    }
+    return result;
   };
 
 
