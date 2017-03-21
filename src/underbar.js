@@ -306,10 +306,18 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-    
-
-
-
+  var cache = {};
+  return function() {
+    var key = JSON.stringify(arguments);
+    if(cache[key]) {
+      return cache[key];
+    }
+    else {
+      var val = func.apply(this, arguments);
+      cache[key] = val;
+      return val;
+    }
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -319,10 +327,9 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
-    var arg1 = arguments[3];
-    var arg2 = arguments[2];
+    var arr = [arguments[2], arguments[3]];
     setTimeout(function() {
-      return func(arg2, arg1);
+      return func.apply(null, arr);
     }, wait);
 
   };
@@ -341,7 +348,7 @@
   _.shuffle = function(array) {
     var result = [];
     for(var i = 0; i < array.length; i++){
-      var shuffled = Math.floor(Math.random()) * (array.length - 1);
+      var shuffled = Math.floor(Math.random()) * (array.length);
       if(result[shuffled] !== array[i]){
         result[shuffled] = array[i];
       } else {
